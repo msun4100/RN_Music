@@ -15,6 +15,8 @@ import TrackPlayer, {Event} from 'react-native-track-player';
 import songs from './data.json';
 import Controller from './Controller';
 
+import SliderComp from './SliderComp';
+
 const {width, height} = Dimensions.get('window');
 
 export default function PlayerScreen() {
@@ -28,14 +30,20 @@ export default function PlayerScreen() {
   const position = useRef(Animated.divide(scrollX, width)).current;
 
   useEffect(() => {
+    console.log('position', position);
+  }, [position]);
+  useEffect(() => {
     // position.addListener(({ value }) => {
     //   console.log(value);
     // });
 
     scrollX.addListener(({value}) => {
+      console.log(typeof value, typeof width);
+      console.log('scrollX.value', value, typeof value);
+      console.log('value / width', value / width);
       const val = Math.round(value / width);
-
-      setSongIndex(val);
+      console.log('scrollX.val', val, typeof val);
+      setSongIndex(String(val));
 
       // little buggy
       //if previous index is not same then only update it
@@ -46,7 +54,7 @@ export default function PlayerScreen() {
     });
 
     TrackPlayer.addEventListener(Event.PlaybackTrackChanged, e => {
-      console.log(e);
+      console.log('e', e);
     });
 
     TrackPlayer.setupPlayer().then(async () => {
@@ -60,7 +68,7 @@ export default function PlayerScreen() {
     return () => {
       scrollX.removeAllListeners();
     };
-  }, []);
+  }, [scrollX]);
 
   useEffect(() => {
     if (isPlayerReady.current) {
@@ -125,6 +133,8 @@ export default function PlayerScreen() {
         <Text style={styles.artist}>{songs[songIndex].artist}</Text>
       </View>
 
+      <SliderComp />
+
       <Controller onNext={goNext} onPrv={goPrv} />
     </SafeAreaView>
   );
@@ -135,15 +145,19 @@ const styles = StyleSheet.create({
     fontSize: 28,
     textAlign: 'center',
     textTransform: 'capitalize',
+    color: '#fff',
   },
   artist: {
     fontSize: 18,
     textAlign: 'center',
     textTransform: 'capitalize',
+    color: '#fff',
   },
   container: {
     justifyContent: 'space-evenly',
+    alignItems: 'center',
     height: height,
     maxHeight: 500,
+    color: '#fff',
   },
 });

@@ -24,16 +24,16 @@ export default function Controller({onNext, onPrv}) {
   const renderPlayPauseBtn = () => {
     switch (isPlaying) {
       case 'playing':
-        return <MaterialIcons name="pause" size={45} />;
+        return <MaterialIcons name="pause" size={45} color="#fff" />;
       case 'paused':
-        return <MaterialIcons name="play-arrow" size={45} />;
+        return <MaterialIcons name="play-arrow" size={45} color="#fff" />;
       default:
-        return <ActivityIndicator size="small" color="#000000" />;
+        return <ActivityIndicator size={40} color="#ffffff" />;
     }
   };
   const onPlayPause = async () => {
-    // const state = await TrackPlayer.getState();
-    // console.log('controller.playBackState', playBackState, state);
+    const state = await TrackPlayer.getState();
+    console.log('controller.playBackState', playBackState, state);
     if (playBackState === 'playing' || playBackState === 3) {
       TrackPlayer.pause();
     } else if (playBackState === 'paused' || playBackState === 2) {
@@ -44,13 +44,13 @@ export default function Controller({onNext, onPrv}) {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={onPrv}>
-        <MaterialIcons name="skip-previous" size={45} />
+        <MaterialIcons name="skip-previous" size={45} color="#fff" />
       </TouchableOpacity>
       <TouchableOpacity onPress={onPlayPause}>
         {renderPlayPauseBtn()}
       </TouchableOpacity>
       <TouchableOpacity onPress={onNext}>
-        <MaterialIcons name="skip-next" size={45} />
+        <MaterialIcons name="skip-next" size={45} color="#fff" />
       </TouchableOpacity>
     </View>
   );
@@ -60,5 +60,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-around',
+    width: 260,
   },
 });
