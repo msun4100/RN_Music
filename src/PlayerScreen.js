@@ -10,7 +10,7 @@ import {
   StyleSheet,
 } from 'react-native';
 
-import TrackPlayer, {Event} from 'react-native-track-player';
+import TrackPlayer, {Capability, Event} from 'react-native-track-player';
 
 import songs from './data.json';
 import Controller from './Controller';
@@ -30,19 +30,12 @@ export default function PlayerScreen() {
   const position = useRef(Animated.divide(scrollX, width)).current;
 
   useEffect(() => {
-    console.log('position', position);
-  }, [position]);
-  useEffect(() => {
-    // position.addListener(({ value }) => {
-    //   console.log(value);
-    // });
+    position.addListener(({value}) => {
+      console.log(value);
+    });
 
     scrollX.addListener(({value}) => {
-      console.log(typeof value, typeof width);
-      console.log('scrollX.value', value, typeof value);
-      console.log('value / width', value / width);
       const val = Math.round(value / width);
-      console.log('scrollX.val', val, typeof val);
       setSongIndex(String(val));
 
       // little buggy
@@ -59,16 +52,30 @@ export default function PlayerScreen() {
 
     TrackPlayer.setupPlayer().then(async () => {
       console.log('Player Ready');
+      // add the array of songs in the playlist
       await TrackPlayer.reset();
       await TrackPlayer.add(songs);
-      isPlayerReady.current = true;
       TrackPlayer.play();
+      isPlayerReady.current = true;
+
+      await TrackPlayer.updateOptions({
+        stopWithApp: false,
+        alwaysPauseOnInterruption: true,
+        capabilities: [
+          Capability.Play,
+          Capability.Pause,
+          Capability.SkipToNext,
+          Capability.SkipToPrevious,
+          // Capability.Stop,
+          // Capability.SeekTo,
+        ],
+      });
     });
 
     return () => {
       scrollX.removeAllListeners();
     };
-  }, [scrollX]);
+  }, [scrollX, position]);
 
   useEffect(() => {
     if (isPlayerReady.current) {
@@ -144,6 +151,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     textAlign: 'center',
+    fontWeight: '600',
     textTransform: 'capitalize',
     color: '#fff',
   },
@@ -157,7 +165,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     alignItems: 'center',
     height: height,
-    maxHeight: 500,
+    maxHeight: 600,
     color: '#fff',
   },
 });

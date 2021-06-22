@@ -30,7 +30,8 @@ export default function SliderComp() {
         maximumValue={duration}
         value={position}
         minimumTrackTintColor="#FFFFFF"
-        maximumTrackTintColor="#ffffff4e"
+        maximumTrackTintColor="rgba(255, 255, 255, .5)"
+        thumbTintColor="#fff"
         onSlidingComplete={handleChange}
       />
       <View style={styles.timerContainer}>
